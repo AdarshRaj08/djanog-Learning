@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .success{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {% for fm in form %}
+          {{fm.label_tag}} {{fm}} {{fm.errors|striptags}} <br><br>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+    <a href="{% url 'login' %}">Login</a>
+
+    {% if messages %}
+      {% for message in messages %}
+        <small {% if message.tags %} class="{{message.tags}}"  {% endif %}>{{message}}</small>
+      {% endfor %}
+    {% endif %}
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            // Add any custom validation here if needed
+            // If custom validation fails, use event.preventDefault() to prevent form submission
+        });
+    </script>
+</body>
+</html>
