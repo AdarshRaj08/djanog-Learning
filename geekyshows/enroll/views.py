@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponseRedirect
+from django.shortcuts import render,HttpResponseRedirect,HttpResponse
 from .forms import SignUpForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -33,11 +33,14 @@ def user_login(request):
             user = authenticate(username=uname,password=upass)
             if user is not None:
                 login(request,user)
+                messages.success(request,'Logged in successfully !!')
                 return HttpResponseRedirect('/profile/')
     else:
         fm = AuthenticationForm()
-
     return render(request, 'enroll/login.html',{'form':fm})
 
 def user_profile(request):
     return render(request,'enroll/profile.html')
+
+def home(request):
+    return HttpResponse('hii this is home')
