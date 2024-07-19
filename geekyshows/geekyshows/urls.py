@@ -27,5 +27,5 @@ urlpatterns = [
     path('logout/',views.user_logout,name='logout'),
     path('changepass/',views.user_change_pass,name='changepass'),
     path('changepass1/',views.user_change_pass1,name='changepass1'),
-
+    path('userdetail/<int:id>',views.user_detail,name='userdetail'),
 ]

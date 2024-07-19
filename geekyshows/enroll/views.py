@@ -1,9 +1,9 @@
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse
-from .forms import SignUpForm
+from .forms import SignUpForm,EditUserProfileForm,EditAdminProfileForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm,SetPasswordForm
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
-
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -16,8 +16,6 @@ def sign_up(request):
             fm.save()
             messages.success(request,'Account Created Successfully !!')
             fm = SignUpForm()
-
-
     else:
         fm = SignUpForm()
     return render(request,'enroll/signup.html',{'form':fm})
@@ -28,6 +26,7 @@ def user_login(request):
     # request.user.is_authenticated: it will check if the user is logged in or not 
     if not request.user.is_authenticated:
         if request.method == "POST":
+            # AuthenticationForm Needs request: Provides access to authentication backends.,Allows handling of request-specific context, which might be necessary for certain authentication processes.
             fm = AuthenticationForm(request=request,data=request.POST)
             if fm.is_valid():
                 uname = fm.cleaned_data['username']
@@ -47,7 +46,26 @@ def user_login(request):
 # Profile
 def user_profile(request):
     if request.user.is_authenticated:
-        return render(request,'enroll/profile.html',{'name':request.user})
+        if request.method == "POST":
+            if request.user.is_superuser == True:
+            #  request.POST binds the submitted data to the form.
+            # instance=request.user ties the form to the current user instance.
+                fm = EditAdminProfileForm(request.POST,instance=request.user)
+                users = User.objects.all()
+            else:
+                fm = EditUserProfileForm(request.POST,instance=request.user)
+                users = None
+            if fm.is_valid():
+                messages.success(request,'Profile Updated !!!')
+                fm.save()
+        else:
+            if request.user.is_superuser == True:
+                fm = EditAdminProfileForm(instance = request.user)
+                users = User.objects.all()
+            else:
+                fm = EditUserProfileForm(instance = request.user)
+                users = None
+        return render(request,'enroll/profile.html',{'name':request.user.username,'form':fm,'users':users})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -94,5 +112,14 @@ def user_change_pass1(request):
             fm = SetPasswordForm(user = request.user)
         return render(request,'enroll/changepass1.html',{'form':fm})
 
+    else:
+        return HttpResponseRedirect('/login/')
+    
+
+def user_detail(request,id):
+    if request.user.is_authenticated:
+        pi = User.objects.get(pk=id)
+        fm = EditUserProfileForm(instance=pi)
+        return render(request,'enroll/userdetail.html',{'form':fm})
     else:
         return HttpResponseRedirect('/login/')
