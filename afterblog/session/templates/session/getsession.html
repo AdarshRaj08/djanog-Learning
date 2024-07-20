@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get-session</title>
+</head>
+<body>
+    <h4>Get session</h4>
+    {{name}}
+    {{lname}}
+
+    <h3>Keys are here</h3>
+      {{keys}}
+      <hr>
+      {{items}}
+
+      <h2>cookie second round</h2>
+      <br>
+      
+      {{request.session.get_session_cookie_age}} <br>
+      {{request.session.get_expiry_age}} <br>
+      {{request.session.get_expiry_date}} <br>
+      {{request.session.get_expire_at_browser_close}} <br>
+
+
+</body>
+</html>
